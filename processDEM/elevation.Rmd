@@ -7,6 +7,7 @@ output:
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(root.dir = '/Users/Hao/Dropbox/Private/Research/DIFM/processDEM/')
 ```
 
 ## Load required packages
@@ -16,14 +17,10 @@ library(rgdal)
 ```
 
 ## Preprocessing elevation data
-### Set working directory
-```{r}
-#setwd("C:/Users/haohu3/Dropbox/Private/Research/DIFM/processDEM/data")
-setwd("/Users/Hao/Dropbox/Private/Research/DIFM/processDEM/data")
 ```
 ### Read from shapefile and define geographc coordinate system as WGS84
-```{r,echo=FALSE}
-bohnhoff <- readOGR(".", "bohnhoff-adams-2016-ec")
+```{r,message=FALSE, warning=FALSE}
+bohnhoff <- readOGR("data", "bohnhoff-adams-2016-ec")
 proj4string(bohnhoff) = CRS("+init=epsg:4326")
 ```
 
@@ -54,9 +51,9 @@ plot(bohnhoff.prj,pch=20,add=T)
 
 
 ## Generate derived products from elevation data
-### TPI: Topographic Position Index - the difference between the value of a cell and the mean value of its 8 surrounding cells
-### TRI: Terrain Ruggedness Index - the mean of the absolute differences between the value of a cell and the value of its 8 surrounding cells
-### roughness:  the minimum value of a cell and its 8 surrounding cells
++ TPI: Topographic Position Index - the difference between the value of a cell and the mean value of its 8 surrounding cells
++ TRI: Terrain Ruggedness Index - the mean of the absolute differences between the value of a cell and the value of its 8 surrounding cells
++ Roughness:  the minimum value of a cell and its 8 surrounding cells
 ```{r}
 bohnhoff.derived <- terrain(bohnhoff.dem, opt=c('slope', 'aspect','flowdir','TPI','TRI','roughness'), unit='degrees')
 ```
