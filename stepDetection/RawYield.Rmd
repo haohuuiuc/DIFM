@@ -1,0 +1,61 @@
+---
+title: "stepDetection"
+author: "Hao Hu"
+date: "November 13, 2017"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(root.dir = 'C:/Users/haohu3/Dropbox/Private/Research/DIFM/stepDetection/')
+```
+
+## Load required packages
+```{r,message=FALSE, warning=FALSE}
+library(ggplot2)
+library(rgdal)
+```
+
+### Read sample rows 1,3,5
+```{r,message=FALSE, warning=FALSE}
+row1 <- readOGR("ILSBarton-37/data/intermediate", "yield_row1")
+row3 <- readOGR("ILSBarton-37/data/intermediate", "yield_row3")
+row5 <- readOGR("ILSBarton-37/data/intermediate", "yield_row5")
+
+```
+### Plot distance X against raw yield and actual seed rate
+```{r fig.cap="Row 1", fig.width=8, fig.height=6, fig.align='center'} 
+verticals = c(498881.96,498967.3,499052.64,499137.98,499223.32,499308.66,499394,499479.34,499564.68) # planned boundaries
+
+ggplot(row1@data, aes(x=X, y=DryYield)) +
+    geom_point(shape=1) + 
+    geom_vline(xintercept=verticals)
+
+ggplot(row1@data, aes(x=X, y=RASTERVALU)) +
+    labs(y = "Actual Seeding Rate") +
+    geom_point(shape=1) + 
+    geom_vline(xintercept=verticals)
+```
+     
+
+```{r fig.cap="Row 3", fig.width=8, fig.height=6, fig.align='center'} 
+ggplot(row3@data, aes(x=X, y=DryYield)) +
+    geom_point(shape=1) + 
+    geom_vline(xintercept=verticals)
+
+ggplot(row3@data, aes(x=X, y=RASTERVALU)) +
+    labs(y = "Actual Seeding Rate") +
+    geom_point(shape=1) + 
+    geom_vline(xintercept=verticals)
+```
+
+```{r fig.cap="Row 5", fig.width=8, fig.height=6, fig.align='center'} 
+ggplot(row5@data, aes(x=X, y=DryYield)) +
+    geom_point(shape=1) + 
+    geom_vline(xintercept=verticals)
+
+ggplot(row5@data, aes(x=X, y=RASTERVALU)) +
+    labs(y = "Actual Seeding Rate") +
+    geom_point(shape=1) + 
+    geom_vline(xintercept=verticals)
+```

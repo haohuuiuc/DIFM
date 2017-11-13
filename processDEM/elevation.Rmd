@@ -18,7 +18,6 @@ library(gstat)
 ```
 
 ## Preprocessing elevation data
-```
 ### Read from shapefile and define geographc coordinate system as WGS84
 ```{r,message=FALSE, warning=FALSE}
 bohnhoff <- readOGR("data", "bohnhoff-adams-2016-ec")
