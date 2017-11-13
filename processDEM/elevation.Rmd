@@ -14,6 +14,7 @@ knitr::opts_chunk$set(root.dir = '/Users/Hao/Dropbox/Private/Research/DIFM/proce
 ```{r,message=FALSE, warning=FALSE}
 library(raster)
 library(rgdal)
+library(gstat)
 ```
 
 ## Preprocessing elevation data
@@ -30,11 +31,22 @@ bohnhoff.prj <- spTransform(bohnhoff, CRS("+proj=utm +zone=15 +datum=WGS84"))
 ```
 
 ### Create Digital Elevation Model (DEM) raster from points
+#### Method without interpolation
 ```{r}
 g <- raster(bohnhoff.prj)
 res(g) <- c(15, 15) # set the resolution to 15 meters
 bohnhoff.dem <- rasterize(bohnhoff.prj, g, field = bohnhoff.prj$ELEVATION, fun = mean, na.rm = TRUE)
 ```
+#### Method with interpolation (IDW - Inverse Distance Weight)
+```{r}
+g <- raster(bohnhoff.prj)
+res(g) <- c(5, 5) # the resolution can be finer
+bohnhoff.dem <- rasterize(bohnhoff.prj, g, field = bohnhoff.prj$ELEVATION, fun = mean, na.rm = TRUE)
+r.idw <- gstat(id = "ELEVATION", formula = ELEVATION~1, data=bohnhoff.prj, 
+      nmax=10, set=list(idp = .5)) # idp is the power of inverse distance function
+bohnhoff.dem <- interpolate(bohnhoff.dem, r.idw)
+```
+
 ### Plot the raster
 ```{r fig.cap="Elevation Map", fig.width=8, fig.height=6, fig.align='center'} 
 
@@ -45,7 +57,7 @@ plot(bohnhoff.dem)
 ```{r fig.cap="Elevation Map (Overlap with original points)", fig.width=8, fig.height=6, fig.align='center'} 
 
 plot(bohnhoff.dem)
-plot(bohnhoff.prj,pch=20,add=T)
+plot(bohnhoff.prj,pch=20,add=T, cex=0.5)
 
 ```
 
