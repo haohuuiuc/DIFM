@@ -1,0 +1,51 @@
+---
+title: "Regression"
+author: "Hao Hu"
+date: "November 30, 2017"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(root.dir = 'C:/Users/haohu3/Dropbox/Private/Research/DIFM/stepDetection/')
+```
+
+## Load required packages
+```{r,message=FALSE, warning=FALSE}
+library(ggplot2)
+library(rgdal)
+```
+
+### Read yield and covariates data
+```{r,message=FALSE, warning=FALSE}
+yield <- readOGR("ILSBarton-37/data/yield_srate_ec_uncleaned", "yield")
+```
+
+### Plot raw yield against actual seed rate, ec deep and ec shallow
+```{r fig.cap="Raw Yield VS Seed Rate, EC Shallow and EC Deep", fig.width=8, fig.height=6, fig.align='center'} 
+
+ggplot(yield@data, aes(x=S_rate, y=DryYield)) +
+    geom_point(shape=1) + 
+    geom_smooth(method='lm')
+
+ggplot(yield@data, aes(x=ec_shallow, y=DryYield)) +
+    geom_point(shape=1)+ 
+    geom_smooth(method='lm')
+ggplot(yield@data, aes(x=ec_deep, y=DryYield)) +
+    geom_point(shape=1)+ 
+    geom_smooth(method='lm')
+
+```
+
+### Simple Linear Regression
+```{r}
+fit_lm1 <- lm(DryYield ~ S_rate, data=yield)
+summary(fit_lm1)
+```
+
+
+### Simple Linear Regression
+```{r}
+fit_lm2 <- lm(DryYield ~ S_rate + ec_shallow + ec_deep, data=yield)
+summary(fit_lm2)
+```
