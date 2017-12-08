@@ -18,16 +18,16 @@ library(rgdal)
 
 ### Read yield and covariates data
 ```{r,message=FALSE, warning=FALSE, cache=TRUE}
-yield <- readOGR("ILSBarton-37/data/intermediate", "yield_in_full_plots")
+yield <- readOGR("ILSBarton-37/data/intermediate", "yield_srate_partial")
 ```
 ### Histogram of applied seeding rate and raw yield
 ```{r fig.cap="Histograme of Raw Yield", fig.width=8, fig.height=6, fig.align='center'} 
-ggplot(yield@data,aes(actual))+
-  geom_histogram(binwidth = 500) + 
-  xlab("Applied Seeding Rate")
+ggplot(yield@data,aes(RASTERVALU))+
+  geom_histogram(binwidth = 100) + 
+  xlab("Applied Seeding Rate") + scale_x_continuous(limits=c(27000,36500))
 ```
 ```{r fig.cap="Histograme of Applied Seeding Rate", fig.width=8, fig.height=6, fig.align='center'} 
-ggplot(yield@data,aes(DryYield))+geom_histogram(binwidth = 5)
+ggplot(yield@data,aes(DryYield))+geom_histogram(binwidth = 5)+scale_x_continuous(limits=c(-1,350))
 ```
 
 ### Clean up outliers for raw yield and actual seed rate
@@ -35,48 +35,28 @@ ggplot(yield@data,aes(DryYield))+geom_histogram(binwidth = 5)
 ```{r}
 yield_filtered <- yield[yield$DryYield > 0, ]
 yield_filtered <- yield_filtered[yield_filtered$DryYield < 350, ]
-yield_filtered <- yield_filtered[yield_filtered$actual > 26750, ]
-yield_filtered <- yield_filtered[yield_filtered$actual < 36500, ]
+yield_filtered <- yield_filtered[yield_filtered$RASTERVALU > 26750, ]
+yield_filtered <- yield_filtered[yield_filtered$RASTERVALU < 36500, ]
 
 ```
 
 ### Plot raw yield against actual seed rate -- scatterplot
-
 ```{r fig.cap="Raw Yield VS Seed Rate", fig.width=8, fig.height=6, fig.align='center'} 
-ggplot(yield_filtered@data, aes(x=actual, y=DryYield)) +
-    geom_point() + 
+ggplot(yield_filtered@data, aes(x=RASTERVALU, y=DryYield)) +
+    geom_point(shape=1) + 
     geom_smooth(method='lm')
 
 ```
 
 ### Assign applied seeding rate to groups
 ```{r}
-cuts = cut(yield_filtered$actual, breaks=c(36750,29250,31750,34250,36500))
+cuts = cut(yield_filtered$RASTERVALU, breaks=c(36750,29250,31750,34250,36500))
 yield_filtered$group = as.numeric(cuts)
 ```
 
 ### Plot raw yield against actual seed rate -- boxplot
 ```{r fig.cap="Raw Yield VS Seed Rate", fig.width=8, fig.height=6, fig.align='center'} 
-ggplot(yield_filtered@data, aes(x=actual, y=DryYield, group=group)) +
-    geom_boxplot(outlier.colour = "red", outlier.shape = 1, outlier.alpha = 0.2)
-
-```
-
-
-### Plot raw yield against EC values -- scatterplot
-
-```{r fig.cap="Raw Yield VS EC Deep", fig.width=8, fig.height=6, fig.align='center'} 
-yield_filtered <- yield[yield$DryYield > 0, ]
-yield_filtered <- yield_filtered[yield_filtered$DryYield < 350, ]
-
-ggplot(yield_filtered@data, aes(x=ec_deep_id, y=DryYield)) +
-    geom_point() + 
-    geom_smooth(method='lm')
-
-```
-```{r fig.cap="Raw Yield VS EC Shallow", fig.width=8, fig.height=6, fig.align='center'} 
-ggplot(yield_filtered@data, aes(x=ec_sha_idw, y=DryYield)) +
-    geom_point() + 
-    geom_smooth(method='lm')
+ggplot(yield_filtered@data, aes(x=RASTERVALU, y=DryYield, group=group)) +
+    geom_boxplot(outlier.colour = "red", outlier.shape = 1, outlier.alpha = 0.3)
 
 ```

@@ -59,3 +59,26 @@ ggplot(row5@data, aes(x=X, y=RASTERVALU)) +
     geom_point(shape=1) + 
     geom_vline(xintercept=verticals)
 ```
+
+### Additional Rows 17, 19, 30
+### Read sample rows 1,3,5
+```{r,message=FALSE, warning=FALSE}
+row17 <- readOGR("ILSBarton-37/data/intermediate", "row17")
+row19 <- readOGR("ILSBarton-37/data/intermediate", "row19")
+row30 <- readOGR("ILSBarton-37/data/intermediate", "row30")
+```
+```{r fig.cap="Row 17", fig.width=8, fig.height=6, fig.align='center'} 
+ggplot(row17@data, aes(x=X, y=DryYield)) +
+    geom_point(shape=1) + 
+    geom_vline(xintercept=verticals)
+```
+```{r fig.cap="Row 19", fig.width=8, fig.height=6, fig.align='center'} 
+ggplot(row19@data, aes(x=X, y=DryYield)) +
+    geom_point(shape=1) + 
+    geom_vline(xintercept=verticals)
+```
+```{r fig.cap="Row 30", fig.width=8, fig.height=6, fig.align='center'} 
+ggplot(row30@data, aes(x=X, y=DryYield)) +
+    geom_point(shape=1) + 
+    geom_vline(xintercept=verticals)
+```
